@@ -1,2 +1,0 @@
-# notesWebApp
-MERN stack
