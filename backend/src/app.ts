@@ -1,9 +1,13 @@
 import "dotenv/config";
 import express, {Request, Response, NextFunction} from "express";
 import notesRoutes from "./routes/notes";  
+import morgan from "morgan";
 //create endpoints that returns the notes we create to the database
 
 const app = express();
+
+//morgan  gives information in terminal whenever get request used
+app.use(morgan("dev"));
 
 //send json to server
 app.use(express.json());

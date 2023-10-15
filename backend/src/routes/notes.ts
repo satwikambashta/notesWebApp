@@ -1,4 +1,4 @@
-import {getNotes, createNotes} from "../controllers/notes"
+import {getNotes, createNotes, getNote} from "../controllers/notes"
 import express from "express";
 
 const router = express.Router();
@@ -7,5 +7,8 @@ router.get("/", getNotes);
 
 //http post request
 router.post("/", createNotes);
+
+//http get by id
+router.get("/:noteId", getNote);
 
 export default router;
