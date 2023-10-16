@@ -2,6 +2,7 @@ import "dotenv/config";
 import express, {Request, Response, NextFunction} from "express";
 import notesRoutes from "./routes/notes";  
 import morgan from "morgan";
+import createHttpError, {isHttpError} from "http-errors";
 //create endpoints that returns the notes we create to the database
 
 const app = express();
@@ -17,7 +18,7 @@ app.use("/api/notes", notesRoutes);
 
 //middleware for handling non existent pages
 app.use((req, res, next)=>{
-    next(Error("Endpoint not found"));
+    next(createHttpError(404, "Endpoint not found")); //404 resource not found
 })
 
 //middleware
@@ -25,12 +26,14 @@ app.use((req, res, next)=>{
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((error: unknown, req: Request, res: Response, next: NextFunction)=>{
     console.error(error);
+    let statusCode =500;
     let errorMessage="Unknown error has occured";
-    if(error instanceof Error)
+    if(isHttpError(error))
     {
+        statusCode=error.status;
         errorMessage=error.message;
     }
-    res.status(500).json({error: errorMessage});
+    res.status(statusCode).json({error: errorMessage});
 });
     
 
