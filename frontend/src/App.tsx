@@ -4,7 +4,7 @@ import Note from "./components/Note"
 import { Container, Row, Col, Button} from 'react-bootstrap';
 import styles from "./styles/NotesPage.module.css"
 import * as NotesApi  from "./network/notes_api"
-import AddNoteDialog from './components/AddNoteDialog';
+import AddEditNoteDialog from './components/AddEditNoteDialog';
 import {GoPlusCircle} from "react-icons/go"
 import styleUtils from "./styles/utils.module.css"
 
@@ -12,6 +12,7 @@ function App() {
   const [notes, setNotes] = useState<NoteModel[]>([]);
   
   const [showAddNoteDialog, setShowAddNoteDialog] = useState(false);
+  const [noteToEdit, setNoteToEdit]=useState<NoteModel|null>(null);
 
   useEffect(() => {
 
@@ -58,19 +59,31 @@ function App() {
             note={note} 
             className={styles.note}
             onDeleteNoteCLicked={deleteNote}
+            onNoteClicked={(note)=>{
+              setNoteToEdit(note);}}
             />
           </Col>
         ))}
       </Row>
       {
         showAddNoteDialog &&  //completely removes component so the dialog box is empty everytime
-        <AddNoteDialog
+        <AddEditNoteDialog
         onDismiss={() => setShowAddNoteDialog(false)}
         onNoteSaved={(newNote)=>{
           setNotes([...notes, newNote]); //creates new array refreshes new note auto
           setShowAddNoteDialog(false); //close dialog
         }}
         />
+      }
+      {noteToEdit &&
+      <AddEditNoteDialog
+      noteToEdit={noteToEdit}
+      onDismiss={()=> setNoteToEdit(null)}
+      onNoteSaved={(updatedNote)=>{
+        setNotes(notes.map(existingNote=> existingNote._id === updatedNote._id ? updatedNote : existingNote));
+        setNoteToEdit(null);
+      }}
+      />
       }
     </Container>
 
