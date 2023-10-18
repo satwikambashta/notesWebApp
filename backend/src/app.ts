@@ -2,7 +2,11 @@ import "dotenv/config";
 import express, {Request, Response, NextFunction} from "express";
 import notesRoutes from "./routes/notes";  
 import morgan from "morgan";
+import userRoutes from "./routes/users";
 import createHttpError, {isHttpError} from "http-errors";
+import session from "express-session";
+import env from "./util/validateEnv";
+import MongoStore from "connect-mongo";
 //create endpoints that returns the notes we create to the database
 
 const app = express();
@@ -12,6 +16,23 @@ app.use(morgan("dev"));
 
 //send json to server
 app.use(express.json());
+
+//express-sessions
+app.use(session({
+    secret: env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie:{
+        maxAge: 60*60*1000, //life of cookie 1hr
+    },
+    rolling: true,
+    store: MongoStore.create({
+        mongoUrl:env.MONGO_CONNECTION_STRING
+    }),
+}));
+
+//sign up
+app.use("/api/users", userRoutes);
 
 //endpoint to get notes
 app.use("/api/notes", notesRoutes);
