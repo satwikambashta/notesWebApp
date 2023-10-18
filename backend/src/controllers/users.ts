@@ -86,3 +86,13 @@ export const login: RequestHandler<unknown, unknown, LoginBody, unknown> = async
 
     }
 };
+//destroy does not return promise so we use callback here
+export const logout: RequestHandler = (req, res, next)=>{
+    req.session.destroy(error =>{
+        if(error){
+            next(error);
+        }
+        else{res.status(204).send();}
+    })
+
+};
