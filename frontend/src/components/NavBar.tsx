@@ -13,18 +13,13 @@ interface NavBarProps {
 
 const NavBar = ({ loggedInUser, onSignUpClicked, onLoginClicked, onLogoutSuccessful }: NavBarProps) => {
     return (
-        <Navbar bg="dark" variant="light" expand="sm" sticky="top">
+        <Navbar bg="primary" variant="light" expand="sm" sticky="top">
             <Container>
                 <Navbar.Brand as={Link} to="/">
                     Notes App
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="main-navbar" />
                 <Navbar.Collapse id="main-navbar">
-                    <Nav>
-                        <Nav.Link as={Link} to="/privacy">
-                            Privacy
-                        </Nav.Link>
-                    </Nav>
                     <Nav className="ms-auto">
                         {loggedInUser
                             ? <NavBarLoggedInView user={loggedInUser} onLogoutSuccessful={onLogoutSuccessful} />
